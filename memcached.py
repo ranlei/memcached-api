@@ -46,6 +46,54 @@ class MemCached(object):
             return False
             sys.exit()
         return True
+    def add(self, key, data, flags=0, exptime=0):
+        byte_num = len(str(data))
+        message = "add "+key+" "+str(flags)+" "+str(exptime)+" "+str(byte_num)\
+            + " "+"[noreply]\r\n"+data+"\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        return True
+
+    def replace(self, key, data, flags=0, exptime=0):
+        byte_num = len(str(data))
+        message = "replace "+key+" "+str(flags)+" "+str(exptime)+" "+str(byte_num)\
+            + " "+"[noreply]\r\n"+data+"\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        return True
+
+    def append(self, key, data):
+        byte_num = len(str(data))
+        flags, exptime = 0, 0
+        message = "append "+key+" "+str(flags)+" "+str(exptime)+" "+str(byte_num)\
+            + " "+"[noreply]\r\n"+data+"\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        return True
+
+
+    def prepend(self, key, data):
+        byte_num = len(str(data))
+        flags, exptime = 0, 0
+        message = "prepend "+key+" "+str(flags)+" "+str(exptime)+" "+str(byte_num)\
+            + " "+"[noreply]\r\n"+data+"\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        return True
+
+
 
     def get(self, key):
         message = "get "+str(key)+"\r\n"
@@ -64,8 +112,28 @@ class MemCached(object):
         except:
             return False
 
+    def gets(self, key):
+        return self.get(key)
+
+    def delete(self, key):
+        message = "delete "+str(key)+"\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        reply = self.s.recv(4096)
+        if reply == "DELETED\r\n":
+            return True
+        if reply == "NOT_FOUND\r\n":
+            print("key is not existed!")
+            return False
+
+
+
 if __name__ == "__main__":
     mem = MemCached()
-    mem.set("names", "rale")
+    mem.set("names", "rale000")
     mem_get = MemCached()
     print(mem_get.get("names"))
+    print(mem.get("names"))
