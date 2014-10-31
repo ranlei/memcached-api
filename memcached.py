@@ -128,12 +128,49 @@ class MemCached(object):
         if reply == "NOT_FOUND\r\n":
             print("key is not existed!")
             return False
+    def incr(self, key, value=1):
+        message = "incr "+key+" "+str(value)+" [noreply]\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        reply = self.s.recv(4096)
+        if reply == "NOT_FOUND\r\n":
+            print("key is not existed!")
+            return False
+        return reply[0:-2]
 
+    def decr(self, key, value=1):
+        message = "decr "+key+" "+str(value)+" [noreply]\r\n"
+        try:
+            self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        reply = self.s.recv(4096)
+        if reply == "NOT_FOUND\r\n":
+            print("key is not existed!")
+            return False
+        return reply[0:-2]
 
+    def touch(self, key, exptime=1):
+        message = "touch "+key+" "+str(exptime)+" [noreply]\r\n"
+        try:
+           self.s.sendall(message)
+        except socket.error:
+            return False
+            sys.exit()
+        reply = self.s.recv(4096)
+        if reply == "TOUCHED\r\n":
+            return True
+        if reply == "NOT_FOUND\r\n":
+            print("key is not existed!")
+            return False
 
 if __name__ == "__main__":
     mem = MemCached()
-    mem.set("names", "rale000")
-    mem_get = MemCached()
-    print(mem_get.get("names"))
-    print(mem.get("names"))
+    mem.set("names", "1")
+    mem_touch = MemCached()
+    print(mem_touch.touch("names"))
+
