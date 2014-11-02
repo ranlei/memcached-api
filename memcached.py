@@ -46,6 +46,7 @@ class MemCached(object):
             return False
             sys.exit()
         return True
+
     def add(self, key, data, flags=0, exptime=0):
         byte_num = len(str(data))
         message = "add "+key+" "+str(flags)+" "+str(exptime)+" "+str(byte_num)\
@@ -80,7 +81,6 @@ class MemCached(object):
             sys.exit()
         return True
 
-
     def prepend(self, key, data):
         byte_num = len(str(data))
         flags, exptime = 0, 0
@@ -92,8 +92,6 @@ class MemCached(object):
             return False
             sys.exit()
         return True
-
-
 
     def get(self, key):
         message = "get "+str(key)+"\r\n"
@@ -128,6 +126,7 @@ class MemCached(object):
         if reply == "NOT_FOUND\r\n":
             print("key is not existed!")
             return False
+
     def incr(self, key, value=1):
         message = "incr "+key+" "+str(value)+" [noreply]\r\n"
         try:
@@ -157,7 +156,7 @@ class MemCached(object):
     def touch(self, key, exptime=1):
         message = "touch "+key+" "+str(exptime)+" [noreply]\r\n"
         try:
-           self.s.sendall(message)
+            self.s.sendall(message)
         except socket.error:
             return False
             sys.exit()
@@ -168,9 +167,9 @@ class MemCached(object):
             print("key is not existed!")
             return False
 
-if __name__ == "__main__":
-    mem = MemCached()
-    mem.set("names", "1")
-    mem_touch = MemCached()
-    print(mem_touch.touch("names"))
 
+if __name__ == "__main__":  # this is interneal test
+    mem = MemCached()
+    mem.set("names", "rales")
+    mem_get = MemCached()
+    print(mem_get.get("names"))
