@@ -1,0 +1,1 @@
+/usr/local/bin/memcached -d -m 10 -u root -l localhost -p 12000 -c 256 -P /tmp/memcached.pid 
